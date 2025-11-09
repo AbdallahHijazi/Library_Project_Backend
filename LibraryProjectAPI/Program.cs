@@ -17,6 +17,7 @@ using LibraryProjectRepository.SheardRepository;
 using LibraryProjectSecurity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using System.IdentityModel.Tokens.Jwt;
@@ -90,10 +91,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
             System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
     options.JsonSerializerOptions.ReferenceHandler = 
             System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-}); ;
+});
+
+builder.Services.AddDbContext<LibraryDbContext>(
+                   options => options.UseSqlServer(builder.Configuration.GetConnectionString("LibraryDb")));
 builder.Services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(
     StackExchange.Redis.ConnectionMultiplexer.Connect("localhost:6379,abortConnect=false"));
-builder.Services.AddScoped<LibraryDbContext>();
 builder.Services.AddScoped<IRepository<Book>,BookRepository>();
 builder.Services.AddScoped<IRepository<Borrowing>,BorrowingRepository>();
 builder.Services.AddScoped<IRepository<Member>,MemberRepository>();
@@ -119,9 +122,9 @@ builder.Services.AddScoped<PermissionAtrRepository>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularDev", policy =>
+    options.AddPolicy("AllowFrontendOrigins", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // Angular dev server
+        policy.WithOrigins("http://localhost:4200", "https://library-project-frontend-pi.vercel.app") // Angular dev server
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

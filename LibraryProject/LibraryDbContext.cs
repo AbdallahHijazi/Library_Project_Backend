@@ -5,6 +5,7 @@ using LibraryProjectDomain.Models.PermissionModel;
 using LibraryProjectDomain.Models.RoleModel;
 using LibraryProjectDomain.Models.UserModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +16,9 @@ namespace LibraryProject
 {
     public class LibraryDbContext : DbContext
     {
-        public LibraryDbContext() { }
+        //public LibraryDbContext() { }
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
         { }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=LibraryDB");
-        }
         public DbSet<Book> Books { get; set; }
         public DbSet<Borrowing> Borrowings { get; set; }
         public DbSet<Member> Members { get; set; }
