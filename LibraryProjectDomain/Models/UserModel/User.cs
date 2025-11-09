@@ -20,6 +20,8 @@ namespace LibraryProjectDomain.Models.UserModel
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public bool EmailConfirmed { get; set; } = false;
+        public string VerificationCode { get; set; }
         public Guid RoleId { get; set; }
         public Role Role { get; set; }
         public ICollection<UserPermission> UserPermissions { get; set; } = new List<UserPermission>();

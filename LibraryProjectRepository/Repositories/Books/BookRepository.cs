@@ -191,7 +191,8 @@ namespace LibraryProjectRepository.Repositories.Books
             var hasActiveBorrowings = await context.Borrowings
                                                         .AnyAsync(b =>
                                                             b.BookId == bookId &&
-                                                            b.IsActive);
+                                                            b.IsActive
+                                                            );
             if (hasActiveBorrowings)
             {
                 throw new InvalidOperationException("Cannot delete the book because it has active borrowings.");

@@ -14,5 +14,7 @@ namespace LibraryProjectDomain.DTOS.UserDTO
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string CaniformPassword { get; set; } = string.Empty;
+        [EmailAddress]
+        public string LinkedEmail { get; set; } = string.Empty;
     }
 }

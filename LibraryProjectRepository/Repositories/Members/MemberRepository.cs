@@ -110,30 +110,7 @@ namespace LibraryProjectRepository.Repositories.Members
 
             return member;
         }
-        //public async Task<bool> DeleteMember(Guid memberId)
-        //{
-        //    var tx = await context.Database.BeginTransactionAsync();
-        //    try
-        //    {
-        //        var member = await context.Members
-        //            .Include(m => m.Borrowings)
-        //            .FirstOrDefaultAsync(m => m.Id == memberId);
-
-        //        if (member == null)
-        //            return false;
-
-        //        context.Members.Remove(member);
-        //        await context.SaveChangesAsync();
-        //        await tx.CommitAsync();
-
-        //        return true;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        await tx.RollbackAsync();
-        //        throw;
-        //    }
-        //}
+        
         public async Task<bool> DeleteMember(Guid memberId)
         {
             var member = await context.Members

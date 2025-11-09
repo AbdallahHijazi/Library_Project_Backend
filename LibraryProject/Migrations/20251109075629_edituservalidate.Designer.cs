@@ -4,6 +4,7 @@ using LibraryProject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryProject.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    partial class LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251109075629_edituservalidate")]
+    partial class edituservalidate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,37 +178,6 @@ namespace LibraryProject.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("UserPermissions");
-                });
-
-            modelBuilder.Entity("LibraryProjectDomain.Models.UserModel.PendingUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LinkedEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VerificationCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PendingUsers");
                 });
 
             modelBuilder.Entity("LibraryProjectDomain.Models.UserModel.User", b =>

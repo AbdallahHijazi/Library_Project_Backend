@@ -43,7 +43,7 @@ namespace LibraryProjectAPI.Controllers
             var createdUser = await repository.Add(create);
             if (createdUser==null)
             {
-                return NotFound("This valuse is error please try again");
+                return BadRequest("Invalid registration data or email already exists.");
             }
 
             return CreatedAtRoute("GetUser", new { id = createdUser.Id }, createdUser);
@@ -152,39 +152,27 @@ namespace LibraryProjectAPI.Controllers
             var db = connection.GetDatabase();
             var key = $"blacklist:{jti}";
 
-            // 🔍 تحقق إذا الـ token محجوب مسبقاً
             var isAlreadyRevoked = await db.KeyExistsAsync(key);
             if (isAlreadyRevoked)
                 return BadRequest("This token has already been logged out.");
 
-            // ⏳ حساب المدة المتبقية لانتهاء الصلاحية
             var ttl = exp - DateTime.UtcNow;
             if (ttl <= TimeSpan.Zero)
                 return BadRequest("Token already expired.");
 
-            // 🚫 إدخال التوكن في القائمة السوداء
             await db.StringSetAsync(key, "revoked", ttl);
 
             return Ok("Logged out successfully");
         }
-        //private async Task<List<string>> GetUserPermissions(Guid userId)
-        //{
-        //    var userPermissions = await context.UserPermissions
-        //                                       .Where(up => up.UserId == userId)
-        //                                       .Select(up => up.Permission.Key)
-        //                                       .ToListAsync();
 
-        //    return userPermissions;
-        //}
         private async Task<List<string>> GetUserPermissions(Guid userId)
         {
-            // 1. جلب بيانات المستخدم ودوره مع صلاحيات الدور
             var user = await context.Users
                 .Include(u => u.Role)
                     .ThenInclude(r => r.RolePermissions)
-                        .ThenInclude(rp => rp.Permission) // لضمان جلب مفتاح الصلاحية النصي
+                        .ThenInclude(rp => rp.Permission) 
                 .Include(u => u.UserPermissions)
-                    .ThenInclude(up => up.Permission) // لضمان جلب مفتاح الصلاحية النصي
+                    .ThenInclude(up => up.Permission) 
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
@@ -192,18 +180,15 @@ namespace LibraryProjectAPI.Controllers
                 return new List<string>();
             }
 
-            // 2. تجميع الصلاحيات المباشرة
             var directPermissions = user.UserPermissions
                 .Select(up => up.Permission.Key)
                 .Where(key => key != null);
 
-            // 3. تجميع صلاحيات الدور
             var rolePermissions = user.Role?.RolePermissions
                 .Select(rp => rp.Permission.Key)
                 .Where(key => key != null)
-                ?? Enumerable.Empty<string>(); // إذا لم يكن هناك دور، نبدأ بقائمة فارغة
+                ?? Enumerable.Empty<string>(); 
 
-            // 4. دمج القائمتين وحذف التكرارات (الحصول على المفاتيح النصية النهائية)
             var combinedKeys = directPermissions
                 .Union(rolePermissions)
                 .Distinct()

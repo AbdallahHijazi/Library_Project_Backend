@@ -23,6 +23,7 @@ using OfficeOpenXml;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static LibraryProjectRepository.Repositories.Users.AuthRepository;
 
 
 ExcelPackage.License.SetNonCommercialPersonal("Test"); 
@@ -107,6 +108,7 @@ builder.Services.AddSingleton<IAuthorizationPolicyProvider, DynamicPermissionPol
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddScoped<IHtmlToPdf, PlaywrightHtmlToPdf>();
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
 
 builder.Services.AddScoped<ReportsRepository>();
